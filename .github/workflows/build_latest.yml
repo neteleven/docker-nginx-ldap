@@ -15,17 +15,30 @@ on:
     paths:
       - "Dockerfile*"
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+
 jobs:
   docker_buildx_alpine:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Checkout repository and set up Docker
-        uses: JonasAlfredsson/checkout-qemu-buildx@v2.1.0
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # setup Docker build action
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
         with:
-          should_login: ${{ github.event_name != 'pull_request' }}
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract the Nginx version numbers from the Dockerfile
         id: tagger
@@ -42,8 +55,8 @@ jobs:
             linux/arm/v7
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
-            axistools/nginx-ldap:alpine
-            axistools/nginx-ldap:mainline-alpine
-            axistools/nginx-ldap:${{ env.NGINX_MAJOR }}-alpine
-            axistools/nginx-ldap:${{ env.NGINX_MAJOR }}.${{ env.NGINX_MINOR }}-alpine
-            axistools/nginx-ldap:${{ env.NGINX_MAJOR }}.${{ env.NGINX_MINOR }}.${{ env.NGINX_PATCH }}-alpine
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:alpine
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:mainline-alpine
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.NGINX_MAJOR }}-alpine
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.NGINX_MAJOR }}.${{ env.NGINX_MINOR }}-alpine
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.NGINX_MAJOR }}.${{ env.NGINX_MINOR }}.${{ env.NGINX_PATCH }}-alpine
