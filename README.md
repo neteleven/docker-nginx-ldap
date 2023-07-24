@@ -7,6 +7,35 @@ via an LDAP server.
 If you are not building this directly yourself you may find information about
 available tags over on [Docker Hub][6].
 
+## Included Modules
+```
+--with-perl_modules_path=/usr/lib/perl5/vendor_perl
+--with-compat
+--with-file-aio
+--with-threads
+--with-http_addition_module
+--with-http_auth_request_module
+--with-http_dav_module
+--with-http_flv_module
+--with-http_gunzip_module
+--with-http_gzip_static_module
+--with-http_mp4_module
+--with-http_random_index_module
+--with-http_realip_module
+--with-http_secure_link_module
+--with-http_slice_module
+--with-http_ssl_module
+--with-http_stub_status_module
+--with-http_sub_module
+--with-http_v2_module
+--with-mail
+--with-mail_ssl_module
+--with-stream
+--with-stream_realip_module
+--with-stream_ssl_module
+--with-stream_ssl_preread_module
+```
+
 ## Usage
 The LDAP module is added in such a way that everything else inside the container
 is exactly as it is inside the [official Nginx image][1]. This means that how
